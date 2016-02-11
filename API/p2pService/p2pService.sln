@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2P.Service", "p2pService\P2P.Service.csproj", "{CD42FD6F-BC00-41AA-91DE-33003E121123}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2P.Model", "P2P.Model\P2P.Model.csproj", "{C89FB241-4BCC-4DF0-BF91-92FF4A70F980}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2PBusinessLayer", "P2PBusinessLayer\P2PBusinessLayer.csproj", "{9B63228C-9FAF-4AB2-9965-CA80B054B697}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2PPersistanceLayer", "P2PPersistanceLayer\P2PPersistanceLayer.csproj", "{9DB3F571-862F-4C6C-884D-EFFA5E5FE82E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CD42FD6F-BC00-41AA-91DE-33003E121123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD42FD6F-BC00-41AA-91DE-33003E121123}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD42FD6F-BC00-41AA-91DE-33003E121123}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD42FD6F-BC00-41AA-91DE-33003E121123}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C89FB241-4BCC-4DF0-BF91-92FF4A70F980}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C89FB241-4BCC-4DF0-BF91-92FF4A70F980}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C89FB241-4BCC-4DF0-BF91-92FF4A70F980}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C89FB241-4BCC-4DF0-BF91-92FF4A70F980}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B63228C-9FAF-4AB2-9965-CA80B054B697}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B63228C-9FAF-4AB2-9965-CA80B054B697}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B63228C-9FAF-4AB2-9965-CA80B054B697}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B63228C-9FAF-4AB2-9965-CA80B054B697}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DB3F571-862F-4C6C-884D-EFFA5E5FE82E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DB3F571-862F-4C6C-884D-EFFA5E5FE82E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DB3F571-862F-4C6C-884D-EFFA5E5FE82E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DB3F571-862F-4C6C-884D-EFFA5E5FE82E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
