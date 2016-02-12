@@ -11,6 +11,6 @@ namespace P2PPersistanceLayer
         List<PersistantOffer> GetOffers(string clubcard, string storeId);
         PersistantDevice GetDeviceDetailsByDeviceId(string deviceId);
         void UpdateNotificationStatus(string deviceId, DateTime date);
-
+        bool NotificationStatusForDevice(string deviceId);
     }
 }

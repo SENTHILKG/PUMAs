@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2PBusinessLayer", "P2PBusi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2PPersistanceLayer", "P2PPersistanceLayer\P2PPersistanceLayer.csproj", "{9DB3F571-862F-4C6C-884D-EFFA5E5FE82E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2PTest", "P2PTest\P2PTest.csproj", "{56685F19-30B0-4E2C-ABEB-CB09F76F100A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{9DB3F571-862F-4C6C-884D-EFFA5E5FE82E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DB3F571-862F-4C6C-884D-EFFA5E5FE82E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DB3F571-862F-4C6C-884D-EFFA5E5FE82E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56685F19-30B0-4E2C-ABEB-CB09F76F100A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56685F19-30B0-4E2C-ABEB-CB09F76F100A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56685F19-30B0-4E2C-ABEB-CB09F76F100A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56685F19-30B0-4E2C-ABEB-CB09F76F100A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

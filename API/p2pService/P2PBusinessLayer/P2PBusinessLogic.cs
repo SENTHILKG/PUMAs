@@ -51,23 +51,7 @@ namespace P2PBusinessLayer
             };
         } 
 
-        /// <summary>
-        /// Get list of general offers for home screen of app
-        /// </summary>
-        /// <param name="deviceId">Device ID to get clubcard number for CC specific coupons</param>
-        /// <returns></returns>
-        //public List<Offer> GetOffers(string deviceId)
-        //{
-        //    Device _device = persist.GetDeviceDetailsByDeviceId(deviceId);
-        //    return persist.GetOffers(_device != null ? _device.Clubcard : null, "0");
-        //}
-
-       /// <summary>
-       /// Get list of offers and coupons store specific
-       /// </summary>
-        /// <param name="deviceId">Device ID to get clubcard number for CC specific coupons</param>
-       /// <param name="storeId">Store ID to get store specific offer</param>
-       /// <returns></returns>
+        
         public List<Promotions> GetOffers(string deviceId, string storeId,bool refresh)
         {
            if (string.IsNullOrEmpty(storeId))
@@ -78,13 +62,27 @@ namespace P2PBusinessLayer
             //get device details by deviceid
             PersistantDevice device = persist.GetDeviceDetailsByDeviceId(deviceId);
 
+            //todo: Wish list offers can be implemented by calling dotcom API
           
             List<PersistantOffer> offers = persist.GetOffers(device != null ? device.Clubcard : string.Empty, storeId);
 
-           if (Convert.ToBoolean(ConfigurationManager.AppSettings["sendNotification"]) && !refresh)
+            //todo: Wish list offers can be implemented by calling dotcom API
+            //todo: Engine to identify the top offers to be showed in the notification
+
+           if (!refresh)
            {
-               SendNotification(device.Id, offers);
-               persist.UpdateNotificationStatus(deviceId, DateTime.Now);
+               if (!persist.NotificationStatusForDevice(deviceId))
+               {
+                   // below code need to be uncommented after GCM implementation
+                  // SendNotification(device.Id, offers);
+                   persist.UpdateNotificationStatus(deviceId, DateTime.Now);
+               }
+               else
+               {
+                   // we are not sending the message as push notification now instead we are popping the message
+                   //for this we ae making offer null
+                   offers = null;
+               }
            }
 
             return ConvertToPromotion(offers);
@@ -93,14 +91,18 @@ namespace P2PBusinessLayer
         private List<Promotions> ConvertToPromotion(List<PersistantOffer> offers)
         {
             List<Promotions> promotion = new List<Promotions>();
-            foreach (var offer in offers)
+            if (offers != null)
             {
-                promotion.Add(new Promotions()
+                foreach (var offer in offers)
                 {
-                    Promotion = offer.Description
-                });
+                    promotion.Add(new Promotions()
+                    {
+                        Promotion = offer.Description
+                    });
+                }
             }
             return promotion;
+           
         }
         
 

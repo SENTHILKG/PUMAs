@@ -9,14 +9,13 @@ namespace P2PPersistanceLayer
 {
     public class SQLPersistant : IPersistant
     {
-        private SqlConnection conn = null;
+        private SqlConnection _conn = null;
 
         private void GetConnection()
         {
-            conn = new SqlConnection(ConfigurationManager.ConnectionStrings["p2p"].ConnectionString);
-            conn.Open();
+            _conn = new SqlConnection(ConfigurationManager.ConnectionStrings["p2p"].ConnectionString);
+            _conn.Open();
         }
-
         
         public bool RegisterDevice(PersistantDevice device)
         {
@@ -24,10 +23,10 @@ namespace P2PPersistanceLayer
             try
             {
                 GetConnection();
-               
-                SqlCommand cmd = new SqlCommand("RegisterUser",conn);
 
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                SqlCommand cmd = new SqlCommand("insert into Device values(@id,@EmailId,@Name,@GcmToken,@Clubcard,@Mobile);", _conn);
+
+                cmd.CommandType = System.Data.CommandType.Text;
                 cmd.Parameters.AddWithValue("@id",device.Id);
                 cmd.Parameters.AddWithValue("@EmailId", device.EmailId);
                 cmd.Parameters.AddWithValue("@Name", device.Name);
@@ -40,12 +39,11 @@ namespace P2PPersistanceLayer
             }
             catch (Exception)
             {
-
                 throw;
             }
             finally
             {
-                conn.Close();
+                _conn.Close();
             }
                 
 
@@ -54,14 +52,13 @@ namespace P2PPersistanceLayer
             return true;
         }
 
-
         public PersistantDevice GetDeviceDetailsByDeviceId(string deviceId)
         {
             try
             {
                 GetConnection();
                 
-                SqlCommand cmd = new SqlCommand("Select * from device where id = @id", conn);
+                SqlCommand cmd = new SqlCommand("Select * from device where id = @id", _conn);
 
                 cmd.CommandType = System.Data.CommandType.Text;
                 cmd.Parameters.AddWithValue("@id", deviceId);
@@ -92,7 +89,7 @@ namespace P2PPersistanceLayer
             }
             finally
             {
-                conn.Close();
+                _conn.Close();
             }
         }
 
@@ -102,9 +99,9 @@ namespace P2PPersistanceLayer
             {
                 GetConnection();
 
-                SqlCommand cmd = new SqlCommand("insert into NotificationStatus(DeviceID,Date) values (@deviceId,@date)", conn);
+                SqlCommand cmd = new SqlCommand("insert into NotificationStatus(DeviceID,NotifiedDate) values (@deviceId,@date)", _conn);
 
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.CommandType = System.Data.CommandType.Text;
                 cmd.Parameters.AddWithValue("@deviceId", deviceId);
                 cmd.Parameters.AddWithValue("@date", date);
                
@@ -118,10 +115,9 @@ namespace P2PPersistanceLayer
             }
             finally
             {
-                conn.Close();
+                _conn.Close();
             }
         }
-
 
         public bool UpdateDeviceDetails(PersistantDevice device)
         {
@@ -129,7 +125,7 @@ namespace P2PPersistanceLayer
             {
                 GetConnection();
 
-                SqlCommand cmd = new SqlCommand("update Device set EmailId = @EmailId,Name = @Name,GcmToken = @GcmToken,Clubcard = @Clubcard,Mobile = @Mobile where id = @id", conn);
+                SqlCommand cmd = new SqlCommand("update Device set EmailId = @EmailId,Name = @Name,GcmToken = @GcmToken,Clubcard = @Clubcard,Mobile = @Mobile where id = @id", _conn);
 
                 cmd.CommandType = System.Data.CommandType.Text;
                 cmd.Parameters.AddWithValue("@id", device.Id);
@@ -149,11 +145,10 @@ namespace P2PPersistanceLayer
             }
             finally
             {
-                conn.Close();
+                _conn.Close();
             }
             return true;
         }
-
 
         public List<PersistantOffer> GetOffers(string clubcard, string storeId)
         {
@@ -170,7 +165,7 @@ namespace P2PPersistanceLayer
                     query += " union select CouponCode as 'OfferCode',Name,CouponDescription as 'OfferDescription',ImagePath from coupon where CouponAvailed = 0 and startDate <= '" + DateTime.Now.ToString("MM/dd/yyyy") + "' and EndDate >= '" + DateTime.Now.ToString("MM/dd/yyyy") + "';";
               
 
-                SqlCommand cmd = new SqlCommand(query, conn);
+                SqlCommand cmd = new SqlCommand(query, _conn);
 
                 cmd.CommandType = System.Data.CommandType.Text;
 
@@ -197,10 +192,42 @@ namespace P2PPersistanceLayer
             }
             finally
             {
-                conn.Close();
+                _conn.Close();
             }
 
             return persistantOffers;
+        }
+
+        public bool NotificationStatusForDevice(string deviceId)
+        {
+            try
+            {
+                GetConnection();
+
+                SqlCommand cmd = new SqlCommand("Select * from NotificationStatus where DeviceID = @id and NotifiedDate = '" + DateTime.Now.ToString("MM/dd/yyyy") + "';", _conn);
+
+                cmd.CommandType = System.Data.CommandType.Text;
+                cmd.Parameters.AddWithValue("@id", deviceId);
+                
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        return true;
+                    }
+                }
+                return false;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                _conn.Close();
+            }
         }
     }
 }
