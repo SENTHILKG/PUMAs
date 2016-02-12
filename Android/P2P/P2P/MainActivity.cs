@@ -82,7 +82,7 @@ namespace P2P
                     new AlertDialog.Builder(this).SetMessage(ex.Message).Show();
                 }
 
-                var intent = new Intent(this, typeof(HomeActivity));
+                Intent intent = new Intent(this, typeof(HomeActivity));
                 intent.PutExtra("Name", _name.Text);
                 StartActivity(intent);
             };
@@ -125,7 +125,7 @@ namespace P2P
         {
             try
             {
-                var addr = new System.Net.Mail.MailAddress(email);
+                System.Net.Mail.MailAddress addr = new System.Net.Mail.MailAddress(email);
                 return addr.Address == email;
             }
             catch

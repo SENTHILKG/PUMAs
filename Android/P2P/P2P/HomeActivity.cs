@@ -83,12 +83,12 @@ namespace P2P
             _lat.Text = lat.ToString();
             _lon.Text = lon.ToString();
 
-            var currentloc = new GeoCoordinate(lat, lon);
+            GeoCoordinate currentloc = new GeoCoordinate(lat, lon);
 
-            foreach (var v in _storeLocations)
+            foreach (KeyValuePair<string,Loc> v in _storeLocations)
             {
-                var storelocation = new GeoCoordinate(v.Value.Latitude, v.Value.Longitude);
-                var distance = currentloc.GetDistanceTo(storelocation);
+                GeoCoordinate storelocation = new GeoCoordinate(v.Value.Latitude, v.Value.Longitude);
+                double distance = currentloc.GetDistanceTo(storelocation);
                 _distanceTo.Text = distance.ToString();
 
                 Context context = this;
