@@ -37,55 +37,63 @@ namespace P2P
         /// <param name="bundle"></param>
         protected override void OnCreate(Bundle bundle)
         {
-            base.OnCreate(bundle);
-
-            SetContentView(Resource.Layout.Main);
-
-            _name = FindViewById<TextView>(Resource.Id.txtname);
-            _mobileno = FindViewById<TextView>(Resource.Id.txtphoneno);
-            _email = FindViewById<TextView>(Resource.Id.txtemailid);
-            _ccno = FindViewById<TextView>(Resource.Id.txtccno);
-            _login = FindViewById<Button>(Resource.Id.btnsubmit);
-            _resp = new StringBuilder();
-            _req = new RegistrationRequest();
-
-            _teleMngr = (TelephonyManager)GetSystemService(TelephonyService);
-            _mobileno.Text = _teleMngr.Line1Number;
-
-            _login.Click += delegate
+            try
             {
-                if (!DoRegistrationValidation())
+                base.OnCreate(bundle);
+
+                SetContentView(Resource.Layout.Main);
+
+                _name = FindViewById<TextView>(Resource.Id.txtname);
+                _mobileno = FindViewById<TextView>(Resource.Id.txtphoneno);
+                _email = FindViewById<TextView>(Resource.Id.txtemailid);
+                _ccno = FindViewById<TextView>(Resource.Id.txtccno);
+                _login = FindViewById<Button>(Resource.Id.btnsubmit);
+                _resp = new StringBuilder();
+                _req = new RegistrationRequest();
+
+                _teleMngr = (TelephonyManager)GetSystemService(TelephonyService);
+                _mobileno.Text = _teleMngr.Line1Number;
+
+                _login.Click += delegate
                 {
-                    new AlertDialog.Builder(this)
-                    .SetMessage(_resp.ToString())
-                    .SetNeutralButton("Ok", delegate { }).Show();
-                    return;
-                }
-
-                try
-                {
-                    ConstructRequest();
-
-                    HttpStatusCode respCode = PostRegistrationDetails(URL, _req);
-
-                    if (respCode != HttpStatusCode.OK)
+                    if (!DoRegistrationValidation())
                     {
                         new AlertDialog.Builder(this)
-                       .SetMessage(respCode.ToString())
-                       .SetNeutralButton("Ok", delegate { }).Show();
+                        .SetMessage(_resp.ToString())
+                        .SetNeutralButton("Ok", delegate { }).Show();
                         return;
                     }
 
-                }
-                catch (Exception ex)
-                {
-                    new AlertDialog.Builder(this).SetMessage(ex.Message).Show();
-                }
+                    try
+                    {
+                        ConstructRequest();
 
-                Intent intent = new Intent(this, typeof(HomeActivity));
-                intent.PutExtra("Name", _name.Text);
-                StartActivity(intent);
-            };
+                        HttpStatusCode respCode = PostRegistrationDetails(URL, _req);
+
+                        if (respCode != HttpStatusCode.OK)
+                        {
+                            new AlertDialog.Builder(this)
+                           .SetMessage(respCode.ToString())
+                           .SetNeutralButton("Ok", delegate { }).Show();
+                            return;
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        new AlertDialog.Builder(this).SetMessage(ex.Message).Show();
+                    }
+
+                    Intent intent = new Intent(this, typeof(HomeActivity));
+                    intent.PutExtra("Name", _name.Text);
+                    intent.PutExtra("DeviceId", _teleMngr.DeviceId);
+                    StartActivity(intent);
+                };
+            }
+            catch (Exception ex)
+            {
+                new AlertDialog.Builder(this).SetMessage("Oncreate main activity **culprit** "+ex.Message).Show();
+            }
         }
 
         /// <summary>

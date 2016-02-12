@@ -12,6 +12,8 @@ using Android.Widget;
 using Android.Locations;
 using P2P.Models;
 using System.Device.Location;
+using System.Net;
+using System.IO;
 
 namespace P2P
 {
@@ -23,7 +25,10 @@ namespace P2P
         TextView _lat;
         TextView _lon;
         TextView _distanceTo;
-        Dictionary<string, Loc> _storeLocations = new Dictionary<string, Loc>(); 
+        Dictionary<string, Loc> _storeLocations = new Dictionary<string, Loc>();
+        //List<TescoPromotion> offers;
+        readonly string urlGetOffers = "http://pumas.cloudapp.net/p2pservice/api/p2p/GetOffers?";
+        string _deviceId = string.Empty;
         #endregion
 
         /// <summary>
@@ -77,31 +82,50 @@ namespace P2P
         /// <param name="location"></param>
         public void OnLocationChanged(Location location)
         {
-            double lat = location.Latitude;
-            double lon = location.Longitude;
-
-            _lat.Text = lat.ToString();
-            _lon.Text = lon.ToString();
-
-            GeoCoordinate currentloc = new GeoCoordinate(lat, lon);
-
-            foreach (KeyValuePair<string,Loc> v in _storeLocations)
+            try
             {
-                GeoCoordinate storelocation = new GeoCoordinate(v.Value.Latitude, v.Value.Longitude);
-                double distance = currentloc.GetDistanceTo(storelocation);
-                _distanceTo.Text = distance.ToString();
+                double lat = location.Latitude;
+                double lon = location.Longitude;
 
-                Context context = this;
-                Android.Content.Res.Resources res = context.Resources;
-                string minRadius = res.GetString(Resource.String.minRadiusinMeters);
+                _lat.Text = lat.ToString();
+                _lon.Text = lon.ToString();
 
-                if (distance < Convert.ToInt16(minRadius))
+                GeoCoordinate currentloc = new GeoCoordinate(lat, lon);
+
+                foreach (KeyValuePair<string, Loc> v in _storeLocations)
                 {
-                    new AlertDialog.Builder(this)
-                     .SetMessage("Hey you are near to store, happy shopping!..")
-                     .SetNeutralButton("Ok", delegate { }).Show();
+                    GeoCoordinate storelocation = new GeoCoordinate(v.Value.Latitude, v.Value.Longitude);
+                    double distance = currentloc.GetDistanceTo(storelocation);
+                    _distanceTo.Text = distance.ToString();
+
+                    Context context = this;
+                    Android.Content.Res.Resources res = context.Resources;
+                    string minRadius = res.GetString(Resource.String.minRadiusinMeters);
+
+                    if (distance < Convert.ToInt16(minRadius))
+                    {
+                        var tescoPromo = GetOffers(urlGetOffers, _deviceId, v.Key, false);
+
+                        List<string> soffers = tescoPromo.Select(e => e.Promotion).ToList();
+
+                        if (soffers.Count != 0)
+                        {
+                            new AlertDialog.Builder(this)
+                           .SetMessage("You have " + soffers.Count + " in hand!...")
+                           .SetNeutralButton("Ok", delegate { }).Show();
+                        }
+
+                        new AlertDialog.Builder(this)
+                         .SetMessage("Hey you are near to store, happy shopping!..")
+                         .SetNeutralButton("Ok", delegate { }).Show();
+                    }
+                    return;
                 }
-                return;
+            }
+            catch (Exception ex)
+            {
+                new AlertDialog.Builder(this)
+                         .SetMessage("Location Changed **culprit** " + ex.Message).Show();
             }
         }
 
@@ -115,7 +139,7 @@ namespace P2P
 
             SetContentView(Resource.Layout.Home);
 
-            _storeLocations.Add("101DTPLPILLAR", new Loc() { Latitude = 12.9673067, Longitude = 77.7228424 });
+            _storeLocations.Add("2907", new Loc() { Latitude = 12.9673067, Longitude = 77.7228424 });
 
             _lat = FindViewById<TextView>(Resource.Id.txtLat);
             _lon = FindViewById<TextView>(Resource.Id.txtlong);
@@ -124,6 +148,7 @@ namespace P2P
             string name = Intent.GetStringExtra("Name");
             TextView tv = FindViewById<TextView>(Resource.Id.txtmessage);
             tv.Text = "Welcome, " + name;
+            _deviceId = Intent.GetStringExtra("DeviceId");
         }
 
         /// <summary>
@@ -155,6 +180,43 @@ namespace P2P
             throw new NotImplementedException();
         }
 
-        
+        /// <summary>
+        /// GetOffers
+        /// </summary>
+        /// <param name="baseURL"></param>
+        /// <param name="deviceID"></param>
+        /// <param name="storeid"></param>
+        /// <param name="refreshFlag"></param>
+        /// <returns></returns>
+        public List<TescoPromotion> GetOffers(string baseURL, string deviceID, string storeid, bool refreshFlag)
+        {
+            string temp = string.Empty;
+            List<TescoPromotion> offers = new List<TescoPromotion>();
+            string url = baseURL + "deviceID=" + deviceID + "&StoreId=" + storeid + "&refreshflag=" + refreshFlag;
+            try
+            {
+
+                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
+                request.ContentType = "application/json";
+                request.Method = "GET";
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        Stream respStream = response.GetResponseStream();
+                        using (var reader = new StreamReader(respStream))
+                        {
+                            temp = reader.ReadToEnd();
+                        }
+                        offers = Newtonsoft.Json.JsonConvert.DeserializeObject<List<TescoPromotion>>(temp);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                new AlertDialog.Builder(this).SetMessage("Get Offer **culprit** " + ex.Message).Show();
+            }
+            return offers;
+        }
     }
 }

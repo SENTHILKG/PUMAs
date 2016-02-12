@@ -61,6 +61,7 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\RegistrationRequest.cs" />
+    <Compile Include="Models\TescoPromotion.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

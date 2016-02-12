@@ -2,5 +2,5 @@
 <resources>
     <string name="Hello">Hello World, Click Me!</string>
     <string name="ApplicationName">P2P</string>
-  <string name="minRadiusinMeters">5</string>
+  <string name="minRadiusinMeters">15</string>
 </resources>
